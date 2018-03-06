@@ -23,6 +23,7 @@ class RandomWords extends StatefulWidget {
 // This class will save the generated word pairs, which will grow infinitely
 class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[]; // List to save suggested word pairs state
+  final _saved = new Set<WordPair>(); // Saved Wordlist
   final _biggerFont = const TextStyle(fontSize: 18.0); // Var to make font bigger
   @override
   // build is the main entry into the class
@@ -66,11 +67,27 @@ class RandomWordsState extends State<RandomWords> {
   }
   // _buildRow: This function displays each new pair in a ListTile, which allows you to make the rows more attractive
   Widget _buildRow(WordPair pair) {
+    final alreadySaved = _saved.contains(pair); // Check if already saved
     return new ListTile(
       title: new Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
+      // Add heart icon to each row
+      trailing: new Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null,
+      ),
+      // Make Hearts tapable
+      onTap: () {
+        setState(() {
+         if (alreadySaved) {
+           _saved.remove(pair);
+         }  else {
+           _saved.add(pair);
+         }
+        });
+      },
     );
   }
 }
